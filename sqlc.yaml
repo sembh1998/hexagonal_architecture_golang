@@ -1,0 +1,13 @@
+version: "1"
+packages: [{
+  # dblog
+  name: "productsqlc",
+  path: "./src/modules/products/infrastructure/mysql/sqlc",
+  schema: "./src/modules/products/infrastructure/mysql/products.schema.sql",
+  queries: "./src/modules/products/infrastructure/mysql/products.queries.sql",
+  engine: "mysql",
+  emit_json_tags: false,
+  emit_prepared_queries: true,
+  emit_interface: true,
+  emit_exact_table_names: false
+},]
