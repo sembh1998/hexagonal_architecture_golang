@@ -16,7 +16,7 @@ type MongoConnection struct {
 var mongoSingleton *MongoConnection
 
 func GetMongoConnection() *MongoConnection {
-	if singleton == nil {
+	if mongoSingleton == nil {
 		os.Setenv("MONGODB_URI", "mongodb+srv://sembenavente:yLYny36GbMfCehL@clusterforlearning.6ihmn20.mongodb.net/?retryWrites=true&w=majority")
 		uri := os.Getenv("MONGODB_URI")
 		client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(uri))
