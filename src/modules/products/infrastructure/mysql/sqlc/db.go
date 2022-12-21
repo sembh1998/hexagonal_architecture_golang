@@ -27,6 +27,9 @@ func Prepare(ctx context.Context, db DBTX) (*Queries, error) {
 	if q.findAllStmt, err = db.PrepareContext(ctx, findAll); err != nil {
 		return nil, fmt.Errorf("error preparing query FindAll: %w", err)
 	}
+	if q.saveStmt, err = db.PrepareContext(ctx, save); err != nil {
+		return nil, fmt.Errorf("error preparing query Save: %w", err)
+	}
 	return &q, nil
 }
 
@@ -35,6 +38,11 @@ func (q *Queries) Close() error {
 	if q.findAllStmt != nil {
 		if cerr := q.findAllStmt.Close(); cerr != nil {
 			err = fmt.Errorf("error closing findAllStmt: %w", cerr)
+		}
+	}
+	if q.saveStmt != nil {
+		if cerr := q.saveStmt.Close(); cerr != nil {
+			err = fmt.Errorf("error closing saveStmt: %w", cerr)
 		}
 	}
 	return err
@@ -77,6 +85,7 @@ type Queries struct {
 	db          DBTX
 	tx          *sql.Tx
 	findAllStmt *sql.Stmt
+	saveStmt    *sql.Stmt
 }
 
 func (q *Queries) WithTx(tx *sql.Tx) *Queries {
@@ -84,5 +93,6 @@ func (q *Queries) WithTx(tx *sql.Tx) *Queries {
 		db:          tx,
 		tx:          tx,
 		findAllStmt: q.findAllStmt,
+		saveStmt:    q.saveStmt,
 	}
 }

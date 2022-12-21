@@ -7,6 +7,7 @@ package productsqlc
 
 import (
 	"context"
+	"database/sql"
 )
 
 const findAll = `-- name: FindAll :many
@@ -39,4 +40,18 @@ func (q *Queries) FindAll(ctx context.Context) ([]Product, error) {
 		return nil, err
 	}
 	return items, nil
+}
+
+const save = `-- name: Save :execresult
+INSERT INTO product(name, description, price) VALUES(?, ?, ?)
+`
+
+type SaveParams struct {
+	Name        string
+	Description string
+	Price       sql.NullFloat64
+}
+
+func (q *Queries) Save(ctx context.Context, arg SaveParams) (sql.Result, error) {
+	return q.exec(ctx, q.saveStmt, save, arg.Name, arg.Description, arg.Price)
 }

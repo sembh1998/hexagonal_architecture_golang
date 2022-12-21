@@ -1,8 +1,9 @@
 package controllers
 
 import (
-	"fmt"
 	"hexagonal-architecture-golang/src/modules/products/application"
+	"hexagonal-architecture-golang/src/modules/products/domain/entities"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -18,7 +19,6 @@ func NewProductController(productApplication *application.ProductApplication) *P
 }
 
 func (p *ProductController) FindAll(c *gin.Context) {
-	fmt.Println("llego a controller")
 	products, err := p.productApplication.FindAll()
 	if err != nil {
 		c.JSON(500, gin.H{"error": err.Error()})
@@ -28,4 +28,20 @@ func (p *ProductController) FindAll(c *gin.Context) {
 		"products": products,
 	})
 
+}
+
+func (p *ProductController) Save(c *gin.Context) {
+	prod := entities.Product{}
+	if err := c.ShouldBindJSON(&prod); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	product, err := p.productApplication.Save(prod)
+	if err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(200, gin.H{
+		"product": product,
+	})
 }

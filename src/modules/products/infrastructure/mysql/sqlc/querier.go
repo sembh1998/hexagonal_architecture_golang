@@ -6,10 +6,12 @@ package productsqlc
 
 import (
 	"context"
+	"database/sql"
 )
 
 type Querier interface {
 	FindAll(ctx context.Context) ([]Product, error)
+	Save(ctx context.Context, arg SaveParams) (sql.Result, error)
 }
 
 var _ Querier = (*Queries)(nil)
